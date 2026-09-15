@@ -34,7 +34,7 @@ final class AudioSessionManager {
             try session.setCategory(
                 .playAndRecord,
                 mode: .default,
-                options: [.mixWithOthers, .allowBluetooth, .allowBluetoothA2DP]
+                options: [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
             )
             try session.setPreferredIOBufferDuration(0.0029) // ~128 samples @ 44.1 kHz
             try session.setActive(true)
