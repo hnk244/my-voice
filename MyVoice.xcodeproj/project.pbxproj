@@ -55,36 +55,17 @@
 		PROD /* MyVoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyVoice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		PHASE_FRAMEWORKS /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
-		ROOT = {
-			isa = PBXGroup;
-			children = (
-				GRP_MYVOICE /* MyVoice */,
-				GRP_PRODUCTS /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		GRP_PRODUCTS /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				PROD /* MyVoice.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		GRP_MYVOICE /* MyVoice */ = {
-			isa = PBXGroup;
-			children = (
-				GRP_APP /* App */,
-				GRP_AUDIO /* Audio */,
-				GRP_DSP /* DSP */,
-				GRP_FEATURES /* Features */,
-				GRP_UI /* UI */,
-				GRP_RESOURCES /* Resources */,
-			);
-			path = MyVoice;
-			sourceTree = "<group>";
-		};
 		GRP_APP /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +86,15 @@
 				F008 /* AudioDiagnostics.swift */,
 			);
 			path = Audio;
+			sourceTree = "<group>";
+		};
+		GRP_COMPONENTS /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F017 /* DiagnosticsView.swift */,
+				F018 /* LevelMeterRow.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		GRP_DSP /* DSP */ = {
@@ -137,12 +127,33 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		GRP_MYVOICE /* MyVoice */ = {
+			isa = PBXGroup;
+			children = (
+				GRP_APP /* App */,
+				GRP_AUDIO /* Audio */,
+				GRP_DSP /* DSP */,
+				GRP_FEATURES /* Features */,
+				GRP_UI /* UI */,
+				GRP_RESOURCES /* Resources */,
+			);
+			path = MyVoice;
+			sourceTree = "<group>";
+		};
 		GRP_PLAYER /* Player */ = {
 			isa = PBXGroup;
 			children = (
 				F016 /* MusicPickerView.swift */,
 			);
 			path = Player;
+			sourceTree = "<group>";
+		};
+		GRP_PRODUCTS /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				PROD /* MyVoice.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		GRP_RECORDING /* Recording */ = {
@@ -153,12 +164,30 @@
 			path = Recording;
 			sourceTree = "<group>";
 		};
+		GRP_RESOURCES /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F020 /* Info.plist */,
+				F021 /* MyVoice.entitlements */,
+				F022 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		GRP_SETTINGS /* Settings */ = {
 			isa = PBXGroup;
 			children = (
 				F015 /* SettingsView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		GRP_THEME /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				F019 /* Theme.swift */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 		GRP_UI /* UI */ = {
@@ -170,32 +199,13 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
-		GRP_COMPONENTS /* Components */ = {
+		ROOT = {
 			isa = PBXGroup;
 			children = (
-				F017 /* DiagnosticsView.swift */,
-				F018 /* LevelMeterRow.swift */,
+				GRP_MYVOICE /* MyVoice */,
+				GRP_PRODUCTS /* Products */,
 			);
-			path = Components;
 			sourceTree = "<group>";
-		};
-		GRP_THEME /* Theme */ = {
-			isa = PBXGroup;
-			children = (
-				F019 /* Theme.swift */,
-			);
-			path = Theme;
-			sourceTree = "<group>";
-		};
-		GRP_RESOURCES /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				F020 /* Info.plist */,
-				F021 /* MyVoice.entitlements */,
-			F022 /* Assets.xcassets */,
-		);
-		path = Resources;
-		sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -227,7 +237,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					TARGET = {
 						CreatedOnToolsVersion = 15.0;
@@ -251,6 +261,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		PHASE_RESOURCES /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A020 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		PHASE_SOURCES /* Sources */ = {
@@ -280,27 +301,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		PHASE_FRAMEWORKS /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
-/* Begin PBXResourcesBuildPhase section */
-		PHASE_RESOURCES /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A020 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		CFG_DEBUG_PROJECT /* Debug */ = {
@@ -337,8 +337,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = R86LBA36PD;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -358,8 +360,33 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CFG_DEBUG_TARGET /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyVoice/Resources/MyVoice.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MyVoice/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.myvoice.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -397,8 +424,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = R86LBA36PD;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -411,36 +440,12 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		CFG_DEBUG_TARGET /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MyVoice/Resources/MyVoice.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = MyVoice/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.myvoice.app;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Debug;
 		};
 		CFG_RELEASE_TARGET /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -450,10 +455,9 @@
 				CODE_SIGN_ENTITLEMENTS = MyVoice/Resources/MyVoice.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MyVoice/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -489,7 +493,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = PROJECT /* Project object */;
 }
