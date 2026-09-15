@@ -8,13 +8,19 @@ import Combine
 ///  AVAudioInputNode (mic)
 ///       │
 ///       ▼
-///   micMixerNode  ←── GainProcessor
+///   micMixerNode  ← tap for mic level metering
 ///       │
 ///       ▼
-///  mainMixerNode  ◄── musicMixerNode ◄── playerNode (AVAudioPlayerNode)
+///   reverbNode (AVAudioUnitReverb)
 ///       │
 ///       ▼
-///  outputNode (AVAudioEngine built-in)
+///   eqNode (AVAudioUnitEQ 3-band)
+///       │
+///       ▼
+///  mainMixerNode  ◄── musicMixerNode ← tap for music level metering
+///       │                    ▲
+///       ▼              playerNode (AVAudioPlayerNode)
+///  outputNode (built-in, auto-connected by AVAudioEngine)
 /// ```
 final class AudioEngineManager: ObservableObject {
 
@@ -41,7 +47,8 @@ final class AudioEngineManager: ObservableObject {
     // MARK: - State
 
     private var musicFile: AVAudioFile?
-    private var meteringTimer: Timer?
+    private var isMicTapInstalled = false
+    private var isMusicTapInstalled = false
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
@@ -51,7 +58,8 @@ final class AudioEngineManager: ObservableObject {
         guard state == .idle else { return }
         state = .starting
 
-        let granted = await sessionManager.requestMicrophonePermission()
+        // Use the modern async API (iOS 17+)
+        let granted = await AVAudioApplication.requestRecordPermission()
         guard granted else {
             state = .idle
             throw AudioSessionManager.SessionError.microphonePermissionDenied
@@ -63,7 +71,7 @@ final class AudioEngineManager: ObservableObject {
             try buildGraph()
             try engine.start()
             state = .active
-            startMetering()
+            installMeteringTaps()
         } catch {
             state = .error(error.localizedDescription)
             throw error
@@ -73,7 +81,7 @@ final class AudioEngineManager: ObservableObject {
     func deactivate() {
         guard state == .active || state == .starting else { return }
         state = .stopping
-        stopMetering()
+        removeMeteringTaps()
         playerNode.stop()
         engine.stop()
         sessionManager.deactivate()
@@ -134,37 +142,26 @@ final class AudioEngineManager: ObservableObject {
     func handleInterruption(type: AVAudioSession.InterruptionType) {
         switch type {
         case .began:
-            let reason: InterruptionReason = .unknown
-            state = .interrupted(reason: reason)
-            stopMetering()
+            state = .interrupted(reason: .unknown)
+            removeMeteringTaps()
         case .ended:
-            Task {
-                try? await resume()
-            }
+            Task { try? await resume() }
         @unknown default:
             break
         }
     }
 
     func handleRouteChange(reason: AVAudioSession.RouteChangeReason) {
-        switch reason {
-        case .oldDeviceUnavailable:
-            // e.g., headphones unplugged — pause to avoid speaker bleed
-            if state == .active {
-                playerNode.pause()
-            }
-        default:
-            break
+        if reason == .oldDeviceUnavailable, state == .active {
+            // Headphones unplugged — pause music to avoid unexpected speaker output
+            playerNode.pause()
         }
     }
 
     func handleMediaServicesReset() {
-        // Full tear-down and rebuild after media services crash
         engine.stop()
         state = .idle
-        Task {
-            try? await activate()
-        }
+        Task { try? await activate() }
     }
 
     // MARK: - Diagnostics
@@ -174,40 +171,51 @@ final class AudioEngineManager: ObservableObject {
     }
 
     /// AVAudioEngine does not expose a direct CPU load API in normal render mode.
-    /// Returns 0; instrument with Instruments.app on device for real measurements.
+    /// Returns 0; use Instruments on device for real measurements.
     var engineCPULoad: Float { 0 }
 
-    // MARK: - Private
+    // MARK: - Private — Graph
 
     private func buildGraph() throws {
         let inputNode = engine.inputNode
         let mainMixer = engine.mainMixerNode
-        let outputNode = engine.outputNode
+
+        // Read input format AFTER AVAudioSession is active so sample rate is valid.
+        // Use nil format where possible so AVAudioEngine negotiates automatically.
         let inputFormat = inputNode.outputFormat(forBus: 0)
+        guard inputFormat.sampleRate > 0 else {
+            throw NSError(
+                domain: "AudioEngineManager",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Invalid input format — sample rate is 0. Is AVAudioSession active?"]
+            )
+        }
 
-        // Configure reverb
+        // Configure reverb (off by default; user can enable later)
         reverbNode.loadFactoryPreset(.smallRoom)
-        reverbNode.wetDryMix = 0 // off by default
+        reverbNode.wetDryMix = 0
 
-        // Attach nodes
+        // Attach custom nodes
         engine.attach(micMixerNode)
         engine.attach(musicMixerNode)
         engine.attach(playerNode)
         engine.attach(eqNode)
         engine.attach(reverbNode)
 
-        // Microphone path: inputNode → micMixer → reverb → eq → mainMixer
-        engine.connect(inputNode, to: micMixerNode, format: inputFormat)
-        engine.connect(micMixerNode, to: reverbNode, format: inputFormat)
-        engine.connect(reverbNode, to: eqNode, format: inputFormat)
-        engine.connect(eqNode, to: mainMixer, format: inputFormat)
+        // Microphone path: inputNode → micMixerNode → reverbNode → eqNode → mainMixerNode
+        // Use nil format on downstream connections so the engine negotiates channel counts.
+        engine.connect(inputNode,    to: micMixerNode, format: inputFormat)
+        engine.connect(micMixerNode, to: reverbNode,   format: nil)
+        engine.connect(reverbNode,   to: eqNode,       format: nil)
+        engine.connect(eqNode,       to: mainMixer,    format: nil)
 
-        // Music path: playerNode → musicMixer → mainMixer
-        let stereoFormat = AVAudioFormat(standardFormatWithSampleRate: inputFormat.sampleRate, channels: 2)
-        engine.connect(playerNode, to: musicMixerNode, format: stereoFormat)
-        engine.connect(musicMixerNode, to: mainMixer, format: stereoFormat)
+        // Music path: playerNode → musicMixerNode → mainMixerNode
+        // Use nil format so the engine accepts whatever file format is loaded.
+        engine.connect(playerNode,    to: musicMixerNode, format: nil)
+        engine.connect(musicMixerNode, to: mainMixer,     format: nil)
 
-        engine.connect(mainMixer, to: outputNode, format: mainMixer.outputFormat(forBus: 0))
+        // DO NOT manually connect mainMixerNode → outputNode.
+        // AVAudioEngine creates and owns that connection automatically.
 
         engine.prepare()
     }
@@ -217,45 +225,72 @@ final class AudioEngineManager: ObservableObject {
         try sessionManager.activate()
         try engine.start()
         state = .active
-        startMetering()
+        installMeteringTaps()
     }
 
-    // MARK: - Metering (~15 FPS, battery-friendly)
+    // MARK: - Metering taps (~15 FPS, battery-friendly)
+    //
+    // Taps MUST be installed on intermediate mixer nodes, NOT on inputNode directly,
+    // because inputNode is already connected in the graph. Installing a second tap on
+    // inputNode after buildGraph() would detach it from the graph or cause an engine error.
 
-    private func startMetering() {
-        engine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: engine.inputNode.outputFormat(forBus: 0)) { [weak self] buffer, _ in
-            self?.updateMicLevel(buffer: buffer)
+    private func installMeteringTaps() {
+        // Mic level: tap micMixerNode output (post-gain, pre-reverb)
+        if !isMicTapInstalled {
+            let micFormat = micMixerNode.outputFormat(forBus: 0)
+            micMixerNode.installTap(onBus: 0, bufferSize: 1024, format: micFormat) { [weak self] buffer, _ in
+                self?.updateMicLevel(buffer: buffer)
+            }
+            isMicTapInstalled = true
         }
 
-        meteringTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 15.0, repeats: true) { [weak self] _ in
-            self?.updateMusicLevel()
+        // Music level: tap musicMixerNode output
+        if !isMusicTapInstalled {
+            let musicFormat = musicMixerNode.outputFormat(forBus: 0)
+            musicMixerNode.installTap(onBus: 0, bufferSize: 1024, format: musicFormat) { [weak self] buffer, _ in
+                self?.updateMusicLevel(buffer: buffer)
+            }
+            isMusicTapInstalled = true
         }
     }
 
-    private func stopMetering() {
-        meteringTimer?.invalidate()
-        meteringTimer = nil
-        if engine.inputNode.numberOfInputs > 0 {
-            engine.inputNode.removeTap(onBus: 0)
+    private func removeMeteringTaps() {
+        if isMicTapInstalled {
+            micMixerNode.removeTap(onBus: 0)
+            isMicTapInstalled = false
         }
-        micPeakLevel = 0
-        musicPeakLevel = 0
+        if isMusicTapInstalled {
+            musicMixerNode.removeTap(onBus: 0)
+            isMusicTapInstalled = false
+        }
+        DispatchQueue.main.async {
+            self.micPeakLevel = 0
+            self.musicPeakLevel = 0
+        }
     }
+
+    // MARK: - Level calculation (realtime-safe: no allocations, no locks)
 
     private func updateMicLevel(buffer: AVAudioPCMBuffer) {
-        guard let data = buffer.floatChannelData?[0] else { return }
-        let frameCount = Int(buffer.frameLength)
-        var peak: Float = 0
-        for i in 0..<frameCount {
-            let abs = abs(data[i])
-            if abs > peak { peak = abs }
-        }
+        let peak = peakLevel(buffer: buffer)
         DispatchQueue.main.async { self.micPeakLevel = peak }
     }
 
-    private func updateMusicLevel() {
-        // Approximate level from playerNode — real impl would use a tap
-        let level = playerNode.isPlaying ? musicMixerNode.outputVolume * 0.7 : 0
-        DispatchQueue.main.async { self.musicPeakLevel = level }
+    private func updateMusicLevel(buffer: AVAudioPCMBuffer) {
+        let peak = peakLevel(buffer: buffer)
+        DispatchQueue.main.async { self.musicPeakLevel = peak }
+    }
+
+    /// Returns the peak absolute sample value (0…1) from the first channel of a PCM buffer.
+    private func peakLevel(buffer: AVAudioPCMBuffer) -> Float {
+        guard let data = buffer.floatChannelData?[0] else { return 0 }
+        let frameCount = Int(buffer.frameLength)
+        guard frameCount > 0 else { return 0 }
+        var peak: Float = 0
+        for i in 0..<frameCount {
+            let s = abs(data[i])
+            if s > peak { peak = s }
+        }
+        return min(peak, 1.0)
     }
 }

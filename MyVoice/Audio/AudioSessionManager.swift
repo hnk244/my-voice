@@ -1,5 +1,4 @@
 import AVFoundation
-import Combine
 
 /// Manages the AVAudioSession lifecycle:
 /// - category configuration
@@ -27,14 +26,6 @@ final class AudioSessionManager {
     }
 
     // MARK: - Public Interface
-
-    func requestMicrophonePermission() async -> Bool {
-        await withCheckedContinuation { continuation in
-            AVAudioApplication.requestRecordPermission { granted in
-                continuation.resume(returning: granted)
-            }
-        }
-    }
 
     /// Configure and activate the audio session for simultaneous recording + playback.
     func activate() throws {
