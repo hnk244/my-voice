@@ -173,9 +173,9 @@ final class AudioEngineManager: ObservableObject {
         sessionManager.diagnostics
     }
 
-    var engineCPULoad: Float {
-        engine.manualRenderingMaximumFrameCount > 0 ? 0 : engine.outputNode.auAudioUnit.cpuLoad
-    }
+    /// AVAudioEngine does not expose a direct CPU load API in normal render mode.
+    /// Returns 0; instrument with Instruments.app on device for real measurements.
+    var engineCPULoad: Float { 0 }
 
     // MARK: - Private
 
