@@ -11,7 +11,7 @@ final class AppState: ObservableObject {
     @Published var engineState: AudioEngineState = .idle
     @Published var micLevel: Float = 0
     @Published var musicLevel: Float = 0
-    @Published var micVolume: Float = 0.8 {
+    @Published var micVolume: Float = 1.0 {
         didSet { audioEngine.setMicrophoneVolume(micVolume) }
     }
     @Published var musicVolume: Float = 0.7 {

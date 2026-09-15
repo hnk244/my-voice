@@ -195,6 +195,9 @@ final class AudioEngineManager: ObservableObject {
         reverbNode.loadFactoryPreset(.smallRoom)
         reverbNode.wetDryMix = 0
 
+        // Input voice at full volume by default
+        micMixerNode.outputVolume = 1.0
+
         // Attach custom nodes
         engine.attach(micMixerNode)
         engine.attach(musicMixerNode)
