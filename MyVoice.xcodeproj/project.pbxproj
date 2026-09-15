@@ -1,0 +1,495 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A001 /* MyVoiceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F001 /* MyVoiceApp.swift */; };
+		A002 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F002 /* AppState.swift */; };
+		A003 /* AudioSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F003 /* AudioSessionManager.swift */; };
+		A004 /* AudioEngineManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F004 /* AudioEngineManager.swift */; };
+		A005 /* AudioEngineState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F005 /* AudioEngineState.swift */; };
+		A006 /* AudioRouteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F006 /* AudioRouteManager.swift */; };
+		A007 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F007 /* AudioRecorder.swift */; };
+		A008 /* AudioDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F008 /* AudioDiagnostics.swift */; };
+		A009 /* EQProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F009 /* EQProcessor.swift */; };
+		A010 /* ReverbProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F010 /* ReverbProcessor.swift */; };
+		A011 /* GainProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F011 /* GainProcessor.swift */; };
+		A012 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F012 /* ContentView.swift */; };
+		A013 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F013 /* HomeView.swift */; };
+		A014 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F014 /* RecordingView.swift */; };
+		A015 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F015 /* SettingsView.swift */; };
+		A016 /* MusicPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F016 /* MusicPickerView.swift */; };
+		A017 /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F017 /* DiagnosticsView.swift */; };
+		A018 /* LevelMeterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F018 /* LevelMeterRow.swift */; };
+		A019 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F019 /* Theme.swift */; };
+		A020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F022 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F001 /* MyVoiceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVoiceApp.swift; sourceTree = "<group>"; };
+		F002 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		F003 /* AudioSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionManager.swift; sourceTree = "<group>"; };
+		F004 /* AudioEngineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineManager.swift; sourceTree = "<group>"; };
+		F005 /* AudioEngineState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineState.swift; sourceTree = "<group>"; };
+		F006 /* AudioRouteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRouteManager.swift; sourceTree = "<group>"; };
+		F007 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		F008 /* AudioDiagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDiagnostics.swift; sourceTree = "<group>"; };
+		F009 /* EQProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EQProcessor.swift; sourceTree = "<group>"; };
+		F010 /* ReverbProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverbProcessor.swift; sourceTree = "<group>"; };
+		F011 /* GainProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GainProcessor.swift; sourceTree = "<group>"; };
+		F012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F013 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		F014 /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
+		F015 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F016 /* MusicPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPickerView.swift; sourceTree = "<group>"; };
+		F017 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
+		F018 /* LevelMeterRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelMeterRow.swift; sourceTree = "<group>"; };
+		F019 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		F020 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F021 /* MyVoice.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyVoice.entitlements; sourceTree = "<group>"; };
+		F022 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		PROD /* MyVoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyVoice.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		ROOT = {
+			isa = PBXGroup;
+			children = (
+				GRP_MYVOICE /* MyVoice */,
+				GRP_PRODUCTS /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		GRP_PRODUCTS /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				PROD /* MyVoice.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		GRP_MYVOICE /* MyVoice */ = {
+			isa = PBXGroup;
+			children = (
+				GRP_APP /* App */,
+				GRP_AUDIO /* Audio */,
+				GRP_DSP /* DSP */,
+				GRP_FEATURES /* Features */,
+				GRP_UI /* UI */,
+				GRP_RESOURCES /* Resources */,
+			);
+			path = MyVoice;
+			sourceTree = "<group>";
+		};
+		GRP_APP /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F001 /* MyVoiceApp.swift */,
+				F002 /* AppState.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		GRP_AUDIO /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				F003 /* AudioSessionManager.swift */,
+				F004 /* AudioEngineManager.swift */,
+				F005 /* AudioEngineState.swift */,
+				F006 /* AudioRouteManager.swift */,
+				F007 /* AudioRecorder.swift */,
+				F008 /* AudioDiagnostics.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		GRP_DSP /* DSP */ = {
+			isa = PBXGroup;
+			children = (
+				F009 /* EQProcessor.swift */,
+				F010 /* ReverbProcessor.swift */,
+				F011 /* GainProcessor.swift */,
+			);
+			path = DSP;
+			sourceTree = "<group>";
+		};
+		GRP_FEATURES /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				GRP_HOME /* Home */,
+				GRP_PLAYER /* Player */,
+				GRP_RECORDING /* Recording */,
+				GRP_SETTINGS /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		GRP_HOME /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				F012 /* ContentView.swift */,
+				F013 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		GRP_PLAYER /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				F016 /* MusicPickerView.swift */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
+		GRP_RECORDING /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				F014 /* RecordingView.swift */,
+			);
+			path = Recording;
+			sourceTree = "<group>";
+		};
+		GRP_SETTINGS /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F015 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		GRP_UI /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				GRP_COMPONENTS /* Components */,
+				GRP_THEME /* Theme */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		GRP_COMPONENTS /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F017 /* DiagnosticsView.swift */,
+				F018 /* LevelMeterRow.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		GRP_THEME /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				F019 /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		GRP_RESOURCES /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F020 /* Info.plist */,
+				F021 /* MyVoice.entitlements */,
+			F022 /* Assets.xcassets */,
+		);
+		path = Resources;
+		sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		TARGET /* MyVoice */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFGLIST_TARGET /* Build configuration list for PBXNativeTarget "MyVoice" */;
+			buildPhases = (
+				PHASE_SOURCES /* Sources */,
+				PHASE_FRAMEWORKS /* Frameworks */,
+				PHASE_RESOURCES /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MyVoice;
+			packageProductDependencies = (
+			);
+			productName = MyVoice;
+			productReference = PROD /* MyVoice.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		PROJECT /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					TARGET = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = CFGLIST_PROJECT /* Build configuration list for PBXProject "MyVoice" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ROOT;
+			productRefGroup = GRP_PRODUCTS /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				TARGET /* MyVoice */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		PHASE_SOURCES /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A001 /* MyVoiceApp.swift in Sources */,
+				A002 /* AppState.swift in Sources */,
+				A003 /* AudioSessionManager.swift in Sources */,
+				A004 /* AudioEngineManager.swift in Sources */,
+				A005 /* AudioEngineState.swift in Sources */,
+				A006 /* AudioRouteManager.swift in Sources */,
+				A007 /* AudioRecorder.swift in Sources */,
+				A008 /* AudioDiagnostics.swift in Sources */,
+				A009 /* EQProcessor.swift in Sources */,
+				A010 /* ReverbProcessor.swift in Sources */,
+				A011 /* GainProcessor.swift in Sources */,
+				A012 /* ContentView.swift in Sources */,
+				A013 /* HomeView.swift in Sources */,
+				A014 /* RecordingView.swift in Sources */,
+				A015 /* SettingsView.swift in Sources */,
+				A016 /* MusicPickerView.swift in Sources */,
+				A017 /* DiagnosticsView.swift in Sources */,
+				A018 /* LevelMeterRow.swift in Sources */,
+				A019 /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		PHASE_FRAMEWORKS /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		PHASE_RESOURCES /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A020 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CFG_DEBUG_PROJECT /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CFG_RELEASE_PROJECT /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CFG_DEBUG_TARGET /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyVoice/Resources/MyVoice.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MyVoice/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.myvoice.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CFG_RELEASE_TARGET /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyVoice/Resources/MyVoice.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MyVoice/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.myvoice.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CFGLIST_PROJECT /* Build configuration list for PBXProject "MyVoice" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFG_DEBUG_PROJECT /* Debug */,
+				CFG_RELEASE_PROJECT /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFGLIST_TARGET /* Build configuration list for PBXNativeTarget "MyVoice" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFG_DEBUG_TARGET /* Debug */,
+				CFG_RELEASE_TARGET /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = PROJECT /* Project object */;
+}
