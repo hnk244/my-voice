@@ -38,8 +38,9 @@ final class AudioEngineManager: ObservableObject {
     private let playerNode = AVAudioPlayerNode()
     private let eqNode = AVAudioUnitEQ(numberOfBands: 3)
     private let reverbNode = AVAudioUnitReverb()
-    /// Dedicated gain stage for mic input. globalGain is in dB; 4× linear = +12.04 dB.
-    private let micGainNode = AVAudioUnitEQ(numberOfBands: 0)
+    /// Dedicated mic gain stage (1 high-shelf band covering full range).
+    /// globalGain drives amplification; bands are bypassed so only globalGain applies.
+    private let micGainNode = AVAudioUnitEQ(numberOfBands: 1)
 
     // MARK: - Supporting Managers
 
@@ -185,7 +186,6 @@ final class AudioEngineManager: ObservableObject {
         let mainMixer = engine.mainMixerNode
 
         // Read input format AFTER AVAudioSession is active so sample rate is valid.
-        // Use nil format where possible so AVAudioEngine negotiates automatically.
         let inputFormat = inputNode.outputFormat(forBus: 0)
         guard inputFormat.sampleRate > 0 else {
             throw NSError(
@@ -195,17 +195,31 @@ final class AudioEngineManager: ObservableObject {
             )
         }
 
-        // Input voice gain: default 4× (+12 dB). Slider drives this via setMicrophoneVolume.
-        micGainNode.globalGain = 12.04  // 20*log10(4) ≈ 12.04 dB
+        // Standard stereo format at the hardware sample rate (used for music path).
+        let stereoFormat = AVAudioFormat(
+            standardFormatWithSampleRate: inputFormat.sampleRate,
+            channels: 2
+        )!
 
-        // Configure reverb (off by default; user can enable later)
+        // Configure micGainNode: 1 band bypassed, globalGain = +12 dB (4×).
+        // The band must be configured even if bypassed; AVAudioUnitEQ requires
+        // numberOfBands ≥ 1 and each band must have a valid frequency.
+        let gainBand = micGainNode.bands[0]
+        gainBand.filterType = .parametric
+        gainBand.frequency  = 1000   // centre freq — irrelevant when bypass=true
+        gainBand.bandwidth  = 1.0
+        gainBand.gain       = 0
+        gainBand.bypass     = true   // band is off; only globalGain applies
+        micGainNode.globalGain = 12.04  // +12.04 dB ≈ 4× linear
+
+        // Configure reverb (off by default)
         reverbNode.loadFactoryPreset(.smallRoom)
         reverbNode.wetDryMix = 0
 
-        // Input voice at full volume by default
+        // Mic mixer at unity (gain is handled by micGainNode)
         micMixerNode.outputVolume = 1.0
 
-        // Attach custom nodes
+        // Attach all custom nodes
         engine.attach(micGainNode)
         engine.attach(micMixerNode)
         engine.attach(musicMixerNode)
@@ -213,21 +227,22 @@ final class AudioEngineManager: ObservableObject {
         engine.attach(eqNode)
         engine.attach(reverbNode)
 
-        // Microphone path: inputNode → micGainNode (+12 dB / 4×) → micMixerNode → reverbNode → eqNode → mainMixerNode
-        // Use nil format on downstream connections so the engine negotiates channel counts.
+        // Microphone path:
+        //   inputNode (mono hw format) → micGainNode → micMixerNode → reverbNode → eqNode → mainMixerNode
         engine.connect(inputNode,    to: micGainNode,  format: inputFormat)
-        engine.connect(micGainNode,  to: micMixerNode, format: nil)
-        engine.connect(micMixerNode, to: reverbNode,   format: nil)
-        engine.connect(reverbNode,   to: eqNode,       format: nil)
-        engine.connect(eqNode,       to: mainMixer,    format: nil)
+        engine.connect(micGainNode,  to: micMixerNode, format: inputFormat)
+        engine.connect(micMixerNode, to: reverbNode,   format: inputFormat)
+        engine.connect(reverbNode,   to: eqNode,       format: inputFormat)
+        engine.connect(eqNode,       to: mainMixer,    format: inputFormat)
 
-        // Music path: playerNode → musicMixerNode → mainMixerNode
-        // Use nil format so the engine accepts whatever file format is loaded.
-        engine.connect(playerNode,    to: musicMixerNode, format: nil)
-        engine.connect(musicMixerNode, to: mainMixer,     format: nil)
+        // Music path:
+        //   playerNode → musicMixerNode → mainMixerNode
+        //   Use explicit stereo format; nil format on playerNode output causes -10868.
+        engine.connect(playerNode,     to: musicMixerNode, format: stereoFormat)
+        engine.connect(musicMixerNode, to: mainMixer,      format: stereoFormat)
 
         // DO NOT manually connect mainMixerNode → outputNode.
-        // AVAudioEngine creates and owns that connection automatically.
+        // AVAudioEngine owns that connection automatically.
 
         engine.prepare()
     }
