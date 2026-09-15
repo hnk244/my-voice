@@ -38,8 +38,7 @@ final class AudioEngineManager: ObservableObject {
     private let playerNode = AVAudioPlayerNode()
     private let eqNode = AVAudioUnitEQ(numberOfBands: 3)
     private let reverbNode = AVAudioUnitReverb()
-    /// Dedicated mic gain stage (1 high-shelf band covering full range).
-    /// globalGain drives amplification; bands are bypassed so only globalGain applies.
+    /// Dedicated mic gain stage (1 band bypassed; only globalGain applies for 4× boost).
     private let micGainNode = AVAudioUnitEQ(numberOfBands: 1)
 
     // MARK: - Supporting Managers
@@ -52,6 +51,7 @@ final class AudioEngineManager: ObservableObject {
     private var musicFile: AVAudioFile?
     private var isMicTapInstalled = false
     private var isMusicTapInstalled = false
+    private var isGraphBuilt = false       // graph persists across stop/start
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
@@ -62,7 +62,6 @@ final class AudioEngineManager: ObservableObject {
         state = .starting
 
         do {
-            // Use the modern async API (iOS 17+)
             let granted = await AVAudioApplication.requestRecordPermission()
             guard granted else {
                 state = .idle
@@ -70,12 +69,19 @@ final class AudioEngineManager: ObservableObject {
             }
 
             try sessionManager.activate()
-            try buildGraph()
+
+            // Build the graph only once; it persists across stop/start cycles.
+            // Re-attaching or re-connecting nodes that are already in the graph
+            // causes AVAudioEngine to throw on the second activation.
+            if !isGraphBuilt {
+                try buildGraph()
+                isGraphBuilt = true
+            }
+
             try engine.start()
             state = .active
             installMeteringTaps()
         } catch {
-            // Always escape .starting so the button is never permanently locked
             state = .idle
             throw error
         }
@@ -164,7 +170,12 @@ final class AudioEngineManager: ObservableObject {
     }
 
     func handleMediaServicesReset() {
+        // After a media services crash the entire audio graph is invalidated.
+        // Reset isGraphBuilt so activate() rebuilds it from scratch.
         engine.stop()
+        isGraphBuilt = false
+        isMicTapInstalled = false
+        isMusicTapInstalled = false
         state = .idle
         Task { try? await activate() }
     }
