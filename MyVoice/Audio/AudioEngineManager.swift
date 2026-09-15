@@ -38,6 +38,8 @@ final class AudioEngineManager: ObservableObject {
     private let playerNode = AVAudioPlayerNode()
     private let eqNode = AVAudioUnitEQ(numberOfBands: 3)
     private let reverbNode = AVAudioUnitReverb()
+    /// Dedicated gain stage for mic input. globalGain is in dB; 4× linear = +12.04 dB.
+    private let micGainNode = AVAudioUnitEQ(numberOfBands: 0)
 
     // MARK: - Supporting Managers
 
@@ -90,8 +92,10 @@ final class AudioEngineManager: ObservableObject {
 
     // MARK: - Volume Controls
 
+    /// Sets mic volume. Slider range 0…1 maps to 0…+12 dB (0×…4× linear gain).
     func setMicrophoneVolume(_ value: Float) {
-        micMixerNode.outputVolume = value
+        // 0.0 → -96 dB (silence), 1.0 → +12.04 dB (4× boost)
+        micGainNode.globalGain = value > 0 ? 20 * log10(value * 4) : -96
     }
 
     func setMusicVolume(_ value: Float) {
@@ -191,6 +195,9 @@ final class AudioEngineManager: ObservableObject {
             )
         }
 
+        // Input voice gain: default 4× (+12 dB). Slider drives this via setMicrophoneVolume.
+        micGainNode.globalGain = 12.04  // 20*log10(4) ≈ 12.04 dB
+
         // Configure reverb (off by default; user can enable later)
         reverbNode.loadFactoryPreset(.smallRoom)
         reverbNode.wetDryMix = 0
@@ -199,15 +206,17 @@ final class AudioEngineManager: ObservableObject {
         micMixerNode.outputVolume = 1.0
 
         // Attach custom nodes
+        engine.attach(micGainNode)
         engine.attach(micMixerNode)
         engine.attach(musicMixerNode)
         engine.attach(playerNode)
         engine.attach(eqNode)
         engine.attach(reverbNode)
 
-        // Microphone path: inputNode → micMixerNode → reverbNode → eqNode → mainMixerNode
+        // Microphone path: inputNode → micGainNode (+12 dB / 4×) → micMixerNode → reverbNode → eqNode → mainMixerNode
         // Use nil format on downstream connections so the engine negotiates channel counts.
-        engine.connect(inputNode,    to: micMixerNode, format: inputFormat)
+        engine.connect(inputNode,    to: micGainNode,  format: inputFormat)
+        engine.connect(micGainNode,  to: micMixerNode, format: nil)
         engine.connect(micMixerNode, to: reverbNode,   format: nil)
         engine.connect(reverbNode,   to: eqNode,       format: nil)
         engine.connect(eqNode,       to: mainMixer,    format: nil)
