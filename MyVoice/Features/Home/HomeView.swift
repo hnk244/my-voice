@@ -158,7 +158,19 @@ struct HomeView: View {
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
         }
+        // Only disable during momentary transitions; never lock on error/interrupted
         .disabled(appState.engineState == .starting || appState.engineState == .stopping)
+    }
+
+    private func toggleEngine() {
+        switch appState.engineState {
+        case .active:
+            appState.deactivate()
+        case .idle, .error, .interrupted:
+            appState.activate()
+        case .starting, .stopping:
+            break // button is disabled during these
+        }
     }
 
     // MARK: - Helpers
@@ -180,14 +192,6 @@ struct HomeView: View {
         case .interrupted: return .orange
         case .error: return .red
         default: return .secondary
-        }
-    }
-
-    private func toggleEngine() {
-        if appState.engineState.isActive {
-            appState.deactivate()
-        } else {
-            appState.activate()
         }
     }
 }

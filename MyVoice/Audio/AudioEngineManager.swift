@@ -60,28 +60,28 @@ final class AudioEngineManager: ObservableObject {
         guard state == .idle else { return }
         state = .starting
 
-        // Use the modern async API (iOS 17+)
-        let granted = await AVAudioApplication.requestRecordPermission()
-        guard granted else {
-            state = .idle
-            throw AudioSessionManager.SessionError.microphonePermissionDenied
-        }
-
-        try sessionManager.activate()
-
         do {
+            // Use the modern async API (iOS 17+)
+            let granted = await AVAudioApplication.requestRecordPermission()
+            guard granted else {
+                state = .idle
+                throw AudioSessionManager.SessionError.microphonePermissionDenied
+            }
+
+            try sessionManager.activate()
             try buildGraph()
             try engine.start()
             state = .active
             installMeteringTaps()
         } catch {
-            state = .error(error.localizedDescription)
+            // Always escape .starting so the button is never permanently locked
+            state = .idle
             throw error
         }
     }
 
     func deactivate() {
-        guard state == .active || state == .starting else { return }
+        guard state != .idle && state != .stopping else { return }
         state = .stopping
         removeMeteringTaps()
         playerNode.stop()

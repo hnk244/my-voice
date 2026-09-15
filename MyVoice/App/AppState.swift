@@ -46,17 +46,17 @@ final class AppState: ObservableObject {
         Task {
             do {
                 try await audioEngine.activate()
-                engineState = .active
+                // engineState is driven by the Combine binding from audioEngine.$state
             } catch {
-                engineState = .idle
                 errorMessage = error.localizedDescription
+                // engine already reset its state to .idle; binding will sync it
             }
         }
     }
 
     func deactivate() {
         audioEngine.deactivate()
-        engineState = .idle
+        // engineState synced via binding; just clear playback flag
         isPlaying = false
     }
 
