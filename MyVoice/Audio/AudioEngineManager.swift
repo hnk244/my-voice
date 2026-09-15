@@ -93,6 +93,12 @@ final class AudioEngineManager: ObservableObject {
         removeMeteringTaps()
         playerNode.stop()
         engine.stop()
+        // Reset the graph so the next activation rebuilds it fresh.
+        // AVAudioSession is deactivated here, which may change hardware format
+        // (sample rate / channel count) — the existing node connections become
+        // stale. We must rebuild to pick up the new format on re-activation.
+        engine.reset()
+        isGraphBuilt = false
         sessionManager.deactivate()
         state = .idle
     }
