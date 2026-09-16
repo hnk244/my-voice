@@ -107,8 +107,8 @@ final class AudioEngineManager: ObservableObject {
 
     func setNoiseCancellationEnabled(_ enabled: Bool) {
         configurationLock.lock()
+        defer { configurationLock.unlock() }
         noiseCancellationEnabled = enabled
-        configurationLock.unlock()
     }
 
     // MARK: - Volume Controls
@@ -282,9 +282,8 @@ final class AudioEngineManager: ObservableObject {
 
     private func currentNoiseCancellationEnabled() -> Bool {
         configurationLock.lock()
-        let isEnabled = noiseCancellationEnabled
-        configurationLock.unlock()
-        return isEnabled
+        defer { configurationLock.unlock() }
+        return noiseCancellationEnabled
     }
 
     // MARK: - Metering taps (~15 FPS, battery-friendly)

@@ -69,6 +69,7 @@ final class AudioSessionManager {
     func deactivate() {
         let session = AVAudioSession.sharedInstance()
         try? session.setActive(false, options: .notifyOthersOnDeactivation)
+        lastAppliedMonitoringMode = .standard
     }
 
     // MARK: - Diagnostics
