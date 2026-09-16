@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 /// Main karaoke monitoring screen.
 struct HomeView: View {
@@ -214,7 +215,7 @@ struct HomeView: View {
     }
 
     private var isBuiltInSpeakerRoute: Bool {
-        appState.currentAudioRoute.localizedCaseInsensitiveContains("speaker")
+        appState.currentOutputPortType == AVAudioSession.Port.builtInSpeaker.rawValue
     }
 }
 

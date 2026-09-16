@@ -30,6 +30,7 @@ final class AppState: ObservableObject {
     @Published var isPlaying: Bool = false
     @Published var errorMessage: String?
     @Published var currentAudioRoute: String = ""
+    @Published var currentOutputPortType: String = ""
 
     // MARK: - Services
 
@@ -108,5 +109,9 @@ final class AppState: ObservableObject {
         routeManager.$currentRoute
             .receive(on: DispatchQueue.main)
             .assign(to: &$currentAudioRoute)
+
+        routeManager.$currentOutputPortType
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$currentOutputPortType)
     }
 }

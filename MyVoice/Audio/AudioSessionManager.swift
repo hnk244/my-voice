@@ -46,11 +46,14 @@ final class AudioSessionManager {
     func activate(noiseCancellationEnabled: Bool) throws {
         let session = AVAudioSession.sharedInstance()
         let monitoringMode: MonitoringMode = noiseCancellationEnabled ? .noiseCancellation : .standard
+        let options: AVAudioSession.CategoryOptions = noiseCancellationEnabled
+        ? [.mixWithOthers, .allowBluetoothHFP]
+        : [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
         do {
             try session.setCategory(
                 .playAndRecord,
                 mode: monitoringMode.sessionMode,
-                options: [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
+                options: options
             )
             try session.setPreferredIOBufferDuration(0.0029) // ~128 samples @ 44.1 kHz
             try session.setActive(true)
