@@ -6,6 +6,20 @@ import AVFoundation
 /// - microphone permission
 final class AudioSessionManager {
 
+    enum MonitoringMode {
+        case standard
+        case noiseCancellation
+
+        var sessionMode: AVAudioSession.Mode {
+            switch self {
+            case .standard:
+                return .default
+            case .noiseCancellation:
+                return .voiceChat
+            }
+        }
+    }
+
     // MARK: - Errors
 
     enum SessionError: LocalizedError {
@@ -28,12 +42,13 @@ final class AudioSessionManager {
     // MARK: - Public Interface
 
     /// Configure and activate the audio session for simultaneous recording + playback.
-    func activate() throws {
+    func activate(noiseCancellationEnabled: Bool) throws {
         let session = AVAudioSession.sharedInstance()
+        let monitoringMode: MonitoringMode = noiseCancellationEnabled ? .noiseCancellation : .standard
         do {
             try session.setCategory(
                 .playAndRecord,
-                mode: .default,
+                mode: monitoringMode.sessionMode,
                 options: [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
             )
             try session.setPreferredIOBufferDuration(0.0029) // ~128 samples @ 44.1 kHz
@@ -56,6 +71,7 @@ final class AudioSessionManager {
         return AudioSessionDiagnostics(
             category: session.category.rawValue,
             mode: session.mode.rawValue,
+            noiseCancellationEnabled: session.mode == .voiceChat,
             sampleRate: session.sampleRate,
             ioBufferDuration: session.ioBufferDuration,
             inputRoute: session.currentRoute.inputs.first?.portName ?? "None",
@@ -69,6 +85,7 @@ final class AudioSessionManager {
 struct AudioSessionDiagnostics {
     let category: String
     let mode: String
+    let noiseCancellationEnabled: Bool
     let sampleRate: Double
     let ioBufferDuration: TimeInterval
     let inputRoute: String

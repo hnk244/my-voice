@@ -17,6 +17,7 @@ struct AudioDiagnostics {
         === Audio Diagnostics ===
         Category:      \(session.category)
         Mode:          \(session.mode)
+        Noise Cancel:  \(session.noiseCancellationEnabled ? "On" : "Off")
         Sample Rate:   \(Int(session.sampleRate)) Hz
         Buffer:        \(String(format: "%.2f", session.ioBufferDuration * 1000)) ms
         Est. Latency:  \(String(format: "%.1f", session.estimatedLatencyMs)) ms

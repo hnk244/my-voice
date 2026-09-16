@@ -52,6 +52,7 @@ final class AudioEngineManager: ObservableObject {
     private var isMicTapInstalled = false
     private var isMusicTapInstalled = false
     private var isGraphBuilt = false       // graph persists across stop/start
+    private var noiseCancellationEnabled = false
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
@@ -68,7 +69,7 @@ final class AudioEngineManager: ObservableObject {
                 throw AudioSessionManager.SessionError.microphonePermissionDenied
             }
 
-            try sessionManager.activate()
+            try sessionManager.activate(noiseCancellationEnabled: noiseCancellationEnabled)
 
             // Build the graph only once; it persists across stop/start cycles.
             // Re-attaching or re-connecting nodes that are already in the graph
@@ -101,6 +102,10 @@ final class AudioEngineManager: ObservableObject {
         isGraphBuilt = false
         sessionManager.deactivate()
         state = .idle
+    }
+
+    func setNoiseCancellationEnabled(_ enabled: Bool) {
+        noiseCancellationEnabled = enabled
     }
 
     // MARK: - Volume Controls
@@ -266,7 +271,7 @@ final class AudioEngineManager: ObservableObject {
 
     private func resume() async throws {
         guard case .interrupted = state else { return }
-        try sessionManager.activate()
+        try sessionManager.activate(noiseCancellationEnabled: noiseCancellationEnabled)
         try engine.start()
         state = .active
         installMeteringTaps()
