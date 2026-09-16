@@ -46,6 +46,7 @@ final class AudioSessionManager {
     func activate(noiseCancellationEnabled: Bool) throws {
         let session = AVAudioSession.sharedInstance()
         let monitoringMode: MonitoringMode = noiseCancellationEnabled ? .noiseCancellation : .standard
+        // Voice processing uses the HFP path; A2DP playback is incompatible in this mode.
         let options: AVAudioSession.CategoryOptions = noiseCancellationEnabled
         ? [.mixWithOthers, .allowBluetoothHFP]
         : [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
