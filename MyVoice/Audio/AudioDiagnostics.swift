@@ -6,8 +6,6 @@ struct AudioDiagnostics {
     let engineRunning: Bool
     let cpuLoad: Float
 
-    var session: AudioSessionDiagnostics { sessionDiagnostics }
-
     init(sessionManager: AudioSessionManager, engineManager: AudioEngineManager) {
         self.sessionDiagnostics = sessionManager.diagnostics
         self.engineRunning = engineManager.state == .active

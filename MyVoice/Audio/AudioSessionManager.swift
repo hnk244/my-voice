@@ -18,6 +18,8 @@ final class AudioSessionManager {
             case .standard:
                 return .default
             case .noiseCancellation:
+                // voiceChat enables Apple's voice-processing path for echo cancellation
+                // and background-noise suppression during live monitoring.
                 return .voiceChat
             }
         }
