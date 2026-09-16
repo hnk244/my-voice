@@ -11,14 +11,8 @@ struct SettingsView: View {
                     Toggle("Noise cancellation", isOn: $appState.noiseCancellationEnabled)
                         .disabled(appState.engineState.isActive)
                     Toggle("Show headphones hint", isOn: $showHeadphonesHint)
-                }
-
-                Section {
-                    Text("Noise cancellation uses Apple voice processing to reduce room noise and speaker bleed. It can color singing vocals, so leave it off when you want the most natural sound.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-
-                    Text("Changes apply the next time you activate monitoring.")
+                } footer: {
+                    Text("Noise cancellation uses Apple voice processing to reduce room noise and speaker bleed. It can color singing vocals, so leave it off when you want the most natural sound.\n\nChanges apply the next time you activate monitoring.")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }

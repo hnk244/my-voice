@@ -9,6 +9,10 @@ final class AudioSessionManager {
         case standard
         case noiseCancellation
 
+        init(noiseCancellationEnabled: Bool) {
+            self = noiseCancellationEnabled ? .noiseCancellation : .standard
+        }
+
         var sessionMode: AVAudioSession.Mode {
             switch self {
             case .standard:
@@ -17,6 +21,16 @@ final class AudioSessionManager {
                 // voiceChat enables Apple's voice-processing path for echo cancellation
                 // and background-noise suppression during live monitoring.
                 return .voiceChat
+            }
+        }
+
+        var categoryOptions: AVAudioSession.CategoryOptions {
+            switch self {
+            case .standard:
+                return [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
+            case .noiseCancellation:
+                // Voice processing uses the HFP path; A2DP playback is incompatible in this mode.
+                return [.mixWithOthers, .allowBluetoothHFP]
             }
         }
     }
@@ -45,16 +59,12 @@ final class AudioSessionManager {
     /// Configure and activate the audio session for simultaneous recording + playback.
     func activate(noiseCancellationEnabled: Bool) throws {
         let session = AVAudioSession.sharedInstance()
-        let monitoringMode: MonitoringMode = noiseCancellationEnabled ? .noiseCancellation : .standard
-        // Voice processing uses the HFP path; A2DP playback is incompatible in this mode.
-        let options: AVAudioSession.CategoryOptions = noiseCancellationEnabled
-        ? [.mixWithOthers, .allowBluetoothHFP]
-        : [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
+        let monitoringMode = MonitoringMode(noiseCancellationEnabled: noiseCancellationEnabled)
         do {
             try session.setCategory(
                 .playAndRecord,
                 mode: monitoringMode.sessionMode,
-                options: options
+                options: monitoringMode.categoryOptions
             )
             try session.setPreferredIOBufferDuration(0.0029) // ~128 samples @ 44.1 kHz
             try session.setActive(true)
