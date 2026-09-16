@@ -21,12 +21,6 @@ struct SettingsView: View {
                     Text("Changes apply the next time you activate monitoring.")
                         .font(.footnote)
                         .foregroundColor(.secondary)
-
-                    if appState.engineState.isActive {
-                        Text("Stop monitoring before changing noise cancellation.")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
-                    }
                 }
 
                 Section("About") {
