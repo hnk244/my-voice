@@ -37,6 +37,7 @@ MyVoice owns the full audio graph:
 | Local music playback | ✅ |
 | Mic + music mix | ✅ |
 | Volume controls (mic / music / master) | ✅ |
+| Optional noise cancellation mode | ✅ |
 | EQ (3-band) | ✅ |
 | Reverb | ✅ |
 | Audio route handling | ✅ |
@@ -90,3 +91,5 @@ IO buffer is configured to ~2.9 ms (128 samples @ 44.1 kHz). Actual end-to-end l
 The engine continues running when the screen is locked or the user switches to another app. The **ACTIVE** button activates it; **STOP** fully releases the microphone and audio session.
 
 > ⚠️ Use headphones for vocal monitoring to avoid acoustic feedback when using the built-in speaker.
+>
+> Noise cancellation is available as an optional monitoring mode in Settings. It uses Apple voice processing to reduce room noise and speaker bleed, but it may color vocals compared with the standard path.

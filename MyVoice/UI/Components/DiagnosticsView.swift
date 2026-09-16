@@ -14,6 +14,7 @@ struct DiagnosticsView: View {
                     Section("AVAudioSession") {
                         DiagRow(label: "Category", value: d.category)
                         DiagRow(label: "Mode", value: d.mode)
+                        DiagRow(label: "Noise Cancel", value: d.noiseCancellationEnabled ? "On" : "Off")
                         DiagRow(label: "Sample Rate", value: "\(Int(d.sampleRate)) Hz")
                         DiagRow(label: "IO Buffer", value: String(format: "%.2f ms", d.ioBufferDuration * 1000))
                         DiagRow(label: "Est. Latency", value: String(format: "%.1f ms", d.estimatedLatencyMs))

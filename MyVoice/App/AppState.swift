@@ -20,10 +20,17 @@ final class AppState: ObservableObject {
     @Published var masterVolume: Float = 1.0 {
         didSet { audioEngine.setMasterVolume(masterVolume) }
     }
+    @Published var noiseCancellationEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(noiseCancellationEnabled, forKey: Self.noiseCancellationKey)
+            audioEngine.setNoiseCancellationEnabled(noiseCancellationEnabled)
+        }
+    }
     @Published var selectedMusicURL: URL?
     @Published var isPlaying: Bool = false
     @Published var errorMessage: String?
     @Published var currentAudioRoute: String = ""
+    @Published var currentOutputPortType: String = ""
 
     // MARK: - Services
 
@@ -31,13 +38,18 @@ final class AppState: ObservableObject {
     let routeManager: AudioRouteManager
 
     private var cancellables = Set<AnyCancellable>()
+    private static let noiseCancellationKey = "noiseCancellationEnabled"
 
     init() {
+        let noiseCancellationEnabled = UserDefaults.standard.object(forKey: Self.noiseCancellationKey) as? Bool ?? false
         let engine = AudioEngineManager()
+        self.noiseCancellationEnabled = noiseCancellationEnabled
         self.audioEngine = engine
         self.routeManager = AudioRouteManager(engine: engine)
 
         bindAudioEngine()
+        // Property observers do not fire during init, so push the stored setting manually.
+        audioEngine.setNoiseCancellationEnabled(noiseCancellationEnabled)
     }
 
     // MARK: - Actions
@@ -97,5 +109,9 @@ final class AppState: ObservableObject {
         routeManager.$currentRoute
             .receive(on: DispatchQueue.main)
             .assign(to: &$currentAudioRoute)
+
+        routeManager.$currentOutputPortType
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$currentOutputPortType)
     }
 }

@@ -6,6 +6,7 @@ import Combine
 final class AudioRouteManager: ObservableObject {
 
     @Published var currentRoute: String = ""
+    @Published var currentOutputPortType: String = ""
 
     private weak var engine: AudioEngineManager?
     private var observers: [NSObjectProtocol] = []
@@ -26,6 +27,7 @@ final class AudioRouteManager: ObservableObject {
         let session = AVAudioSession.sharedInstance()
         let output = session.currentRoute.outputs.first?.portName ?? "Unknown"
         let input = session.currentRoute.inputs.first?.portName ?? "None"
+        currentOutputPortType = session.currentRoute.outputs.first?.portType.rawValue ?? ""
         currentRoute = "\(input) → \(output)"
     }
 

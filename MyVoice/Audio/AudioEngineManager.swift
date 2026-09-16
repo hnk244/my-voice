@@ -45,6 +45,7 @@ final class AudioEngineManager: ObservableObject {
 
     private let sessionManager = AudioSessionManager()
     private let recorder = AudioRecorder()
+    private let configurationLock = NSLock()
 
     // MARK: - State
 
@@ -52,6 +53,7 @@ final class AudioEngineManager: ObservableObject {
     private var isMicTapInstalled = false
     private var isMusicTapInstalled = false
     private var isGraphBuilt = false       // graph persists across stop/start
+    private var noiseCancellationEnabled = false
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
@@ -68,7 +70,8 @@ final class AudioEngineManager: ObservableObject {
                 throw AudioSessionManager.SessionError.microphonePermissionDenied
             }
 
-            try sessionManager.activate()
+            let noiseCancellationEnabled = currentNoiseCancellationEnabled()
+            try sessionManager.activate(noiseCancellationEnabled: noiseCancellationEnabled)
 
             // Build the graph only once; it persists across stop/start cycles.
             // Re-attaching or re-connecting nodes that are already in the graph
@@ -101,6 +104,12 @@ final class AudioEngineManager: ObservableObject {
         isGraphBuilt = false
         sessionManager.deactivate()
         state = .idle
+    }
+
+    func setNoiseCancellationEnabled(_ enabled: Bool) {
+        configurationLock.lock()
+        defer { configurationLock.unlock() }
+        noiseCancellationEnabled = enabled
     }
 
     // MARK: - Volume Controls
@@ -266,10 +275,17 @@ final class AudioEngineManager: ObservableObject {
 
     private func resume() async throws {
         guard case .interrupted = state else { return }
-        try sessionManager.activate()
+        let noiseCancellationEnabled = currentNoiseCancellationEnabled()
+        try sessionManager.activate(noiseCancellationEnabled: noiseCancellationEnabled)
         try engine.start()
         state = .active
         installMeteringTaps()
+    }
+
+    private func currentNoiseCancellationEnabled() -> Bool {
+        configurationLock.lock()
+        defer { configurationLock.unlock() }
+        return noiseCancellationEnabled
     }
 
     // MARK: - Metering taps (~15 FPS, battery-friendly)

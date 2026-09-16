@@ -5,6 +5,35 @@ import AVFoundation
 /// - activation / deactivation
 /// - microphone permission
 final class AudioSessionManager {
+    enum MonitoringMode {
+        case standard
+        case noiseCancellation
+
+        init(noiseCancellationEnabled: Bool) {
+            self = noiseCancellationEnabled ? .noiseCancellation : .standard
+        }
+
+        var sessionMode: AVAudioSession.Mode {
+            switch self {
+            case .standard:
+                return .default
+            case .noiseCancellation:
+                // voiceChat enables Apple's voice-processing path for echo cancellation
+                // and background-noise suppression during live monitoring.
+                return .voiceChat
+            }
+        }
+
+        var categoryOptions: AVAudioSession.CategoryOptions {
+            switch self {
+            case .standard:
+                return [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
+            case .noiseCancellation:
+                // Voice processing uses the HFP path; A2DP playback is incompatible in this mode.
+                return [.mixWithOthers, .allowBluetoothHFP]
+            }
+        }
+    }
 
     // MARK: - Errors
 
@@ -28,13 +57,14 @@ final class AudioSessionManager {
     // MARK: - Public Interface
 
     /// Configure and activate the audio session for simultaneous recording + playback.
-    func activate() throws {
+    func activate(noiseCancellationEnabled: Bool) throws {
         let session = AVAudioSession.sharedInstance()
+        let monitoringMode = MonitoringMode(noiseCancellationEnabled: noiseCancellationEnabled)
         do {
             try session.setCategory(
                 .playAndRecord,
-                mode: .default,
-                options: [.mixWithOthers, .allowBluetoothHFP, .allowBluetoothA2DP]
+                mode: monitoringMode.sessionMode,
+                options: monitoringMode.categoryOptions
             )
             try session.setPreferredIOBufferDuration(0.0029) // ~128 samples @ 44.1 kHz
             try session.setActive(true)
@@ -56,6 +86,7 @@ final class AudioSessionManager {
         return AudioSessionDiagnostics(
             category: session.category.rawValue,
             mode: session.mode.rawValue,
+            noiseCancellationEnabled: session.mode == .voiceChat,
             sampleRate: session.sampleRate,
             ioBufferDuration: session.ioBufferDuration,
             inputRoute: session.currentRoute.inputs.first?.portName ?? "None",
@@ -69,6 +100,7 @@ final class AudioSessionManager {
 struct AudioSessionDiagnostics {
     let category: String
     let mode: String
+    let noiseCancellationEnabled: Bool
     let sampleRate: Double
     let ioBufferDuration: TimeInterval
     let inputRoute: String

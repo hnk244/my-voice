@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 /// Main karaoke monitoring screen.
 struct HomeView: View {
@@ -17,6 +18,8 @@ struct HomeView: View {
 
                     // Status indicator
                     statusIndicator
+
+                    routeWarning
 
                     // Level meters
                     levelMetersSection
@@ -97,6 +100,22 @@ struct HomeView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(stateColor.opacity(0.12), in: Capsule())
+    }
+
+    @ViewBuilder
+    private var routeWarning: some View {
+        if appState.engineState.isActive, isBuiltInSpeakerRoute {
+            Text(
+                appState.noiseCancellationEnabled
+                ? "Built-in speaker route detected. Noise cancellation can reduce bleed, but headphones still give the cleanest monitoring."
+                : "Built-in speaker route detected. Use headphones for the cleanest monitoring, or enable Noise Cancellation to reduce echo and room bleed."
+            )
+            .font(.footnote)
+            .foregroundColor(.secondary)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+        }
     }
 
     private var levelMetersSection: some View {
@@ -193,6 +212,10 @@ struct HomeView: View {
         case .error: return .red
         default: return .secondary
         }
+    }
+
+    private var isBuiltInSpeakerRoute: Bool {
+        appState.currentOutputPortType == AVAudioSession.Port.builtInSpeaker.rawValue
     }
 }
 
