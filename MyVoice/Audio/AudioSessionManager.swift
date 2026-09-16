@@ -5,6 +5,7 @@ import AVFoundation
 /// - activation / deactivation
 /// - microphone permission
 final class AudioSessionManager {
+    private let configurationLock = NSLock()
     /// Tracks the last successfully applied monitoring mode for diagnostics.
     private var lastAppliedMonitoringMode: MonitoringMode = .standard
 
@@ -59,7 +60,7 @@ final class AudioSessionManager {
             )
             try session.setPreferredIOBufferDuration(0.0029) // ~128 samples @ 44.1 kHz
             try session.setActive(true)
-            lastAppliedMonitoringMode = monitoringMode
+            setLastAppliedMonitoringMode(monitoringMode)
         } catch {
             throw SessionError.sessionActivationFailed(error)
         }
@@ -69,7 +70,7 @@ final class AudioSessionManager {
     func deactivate() {
         let session = AVAudioSession.sharedInstance()
         try? session.setActive(false, options: .notifyOthersOnDeactivation)
-        lastAppliedMonitoringMode = .standard
+        setLastAppliedMonitoringMode(.standard)
     }
 
     // MARK: - Diagnostics
@@ -79,7 +80,7 @@ final class AudioSessionManager {
         return AudioSessionDiagnostics(
             category: session.category.rawValue,
             mode: session.mode.rawValue,
-            noiseCancellationEnabled: lastAppliedMonitoringMode == .noiseCancellation,
+            noiseCancellationEnabled: currentMonitoringMode() == .noiseCancellation,
             sampleRate: session.sampleRate,
             ioBufferDuration: session.ioBufferDuration,
             inputRoute: session.currentRoute.inputs.first?.portName ?? "None",
@@ -87,6 +88,18 @@ final class AudioSessionManager {
             inputChannels: session.inputNumberOfChannels,
             outputChannels: session.outputNumberOfChannels
         )
+    }
+
+    private func setLastAppliedMonitoringMode(_ mode: MonitoringMode) {
+        configurationLock.lock()
+        defer { configurationLock.unlock() }
+        lastAppliedMonitoringMode = mode
+    }
+
+    private func currentMonitoringMode() -> MonitoringMode {
+        configurationLock.lock()
+        defer { configurationLock.unlock() }
+        return lastAppliedMonitoringMode
     }
 }
 
