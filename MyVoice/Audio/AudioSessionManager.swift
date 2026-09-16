@@ -5,6 +5,7 @@ import AVFoundation
 /// - activation / deactivation
 /// - microphone permission
 final class AudioSessionManager {
+    private var currentMonitoringMode: MonitoringMode = .standard
 
     enum MonitoringMode {
         case standard
@@ -53,6 +54,7 @@ final class AudioSessionManager {
             )
             try session.setPreferredIOBufferDuration(0.0029) // ~128 samples @ 44.1 kHz
             try session.setActive(true)
+            currentMonitoringMode = monitoringMode
         } catch {
             throw SessionError.sessionActivationFailed(error)
         }
@@ -71,7 +73,7 @@ final class AudioSessionManager {
         return AudioSessionDiagnostics(
             category: session.category.rawValue,
             mode: session.mode.rawValue,
-            noiseCancellationEnabled: session.mode == .voiceChat,
+            noiseCancellationEnabled: currentMonitoringMode == .noiseCancellation,
             sampleRate: session.sampleRate,
             ioBufferDuration: session.ioBufferDuration,
             inputRoute: session.currentRoute.inputs.first?.portName ?? "None",

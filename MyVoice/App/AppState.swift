@@ -47,6 +47,7 @@ final class AppState: ObservableObject {
         self.routeManager = AudioRouteManager(engine: engine)
 
         bindAudioEngine()
+        // Property observers do not fire during init, so push the stored setting manually.
         audioEngine.setNoiseCancellationEnabled(noiseCancellationEnabled)
     }
 
