@@ -45,6 +45,7 @@ final class AudioEngineManager: ObservableObject {
 
     private let sessionManager = AudioSessionManager()
     private let recorder = AudioRecorder()
+    private let configurationLock = NSLock()
 
     // MARK: - State
 
@@ -69,7 +70,7 @@ final class AudioEngineManager: ObservableObject {
                 throw AudioSessionManager.SessionError.microphonePermissionDenied
             }
 
-            try sessionManager.activate(noiseCancellationEnabled: noiseCancellationEnabled)
+            try sessionManager.activate(noiseCancellationEnabled: currentNoiseCancellationEnabled())
 
             // Build the graph only once; it persists across stop/start cycles.
             // Re-attaching or re-connecting nodes that are already in the graph
@@ -105,7 +106,9 @@ final class AudioEngineManager: ObservableObject {
     }
 
     func setNoiseCancellationEnabled(_ enabled: Bool) {
+        configurationLock.lock()
         noiseCancellationEnabled = enabled
+        configurationLock.unlock()
     }
 
     // MARK: - Volume Controls
@@ -271,10 +274,17 @@ final class AudioEngineManager: ObservableObject {
 
     private func resume() async throws {
         guard case .interrupted = state else { return }
-        try sessionManager.activate(noiseCancellationEnabled: noiseCancellationEnabled)
+        try sessionManager.activate(noiseCancellationEnabled: currentNoiseCancellationEnabled())
         try engine.start()
         state = .active
         installMeteringTaps()
+    }
+
+    private func currentNoiseCancellationEnabled() -> Bool {
+        configurationLock.lock()
+        let isEnabled = noiseCancellationEnabled
+        configurationLock.unlock()
+        return isEnabled
     }
 
     // MARK: - Metering taps (~15 FPS, battery-friendly)
