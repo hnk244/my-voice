@@ -2,12 +2,12 @@ import AVFoundation
 
 /// Collects and exposes real-time audio diagnostics for the debug panel.
 struct AudioDiagnostics {
-    let sessionDiagnostics: AudioSessionDiagnostics
+    let session: AudioSessionDiagnostics
     let engineRunning: Bool
     let cpuLoad: Float
 
     init(sessionManager: AudioSessionManager, engineManager: AudioEngineManager) {
-        self.sessionDiagnostics = sessionManager.diagnostics
+        self.session = sessionManager.diagnostics
         self.engineRunning = engineManager.state == .active
         self.cpuLoad = engineManager.engineCPULoad
     }
@@ -15,16 +15,16 @@ struct AudioDiagnostics {
     var description: String {
         """
         === Audio Diagnostics ===
-        Category:      \(sessionDiagnostics.category)
-        Mode:          \(sessionDiagnostics.mode)
-        Noise Cancel:  \(sessionDiagnostics.noiseCancellationEnabled ? "On" : "Off")
-        Sample Rate:   \(Int(sessionDiagnostics.sampleRate)) Hz
-        Buffer:        \(String(format: "%.2f", sessionDiagnostics.ioBufferDuration * 1000)) ms
-        Est. Latency:  \(String(format: "%.1f", sessionDiagnostics.estimatedLatencyMs)) ms
-        Input:         \(sessionDiagnostics.inputRoute)
-        Output:        \(sessionDiagnostics.outputRoute)
-        In Channels:   \(sessionDiagnostics.inputChannels)
-        Out Channels:  \(sessionDiagnostics.outputChannels)
+        Category:      \(session.category)
+        Mode:          \(session.mode)
+        Noise Cancel:  \(session.noiseCancellationEnabled ? "On" : "Off")
+        Sample Rate:   \(Int(session.sampleRate)) Hz
+        Buffer:        \(String(format: "%.2f", session.ioBufferDuration * 1000)) ms
+        Est. Latency:  \(String(format: "%.1f", session.estimatedLatencyMs)) ms
+        Input:         \(session.inputRoute)
+        Output:        \(session.outputRoute)
+        In Channels:   \(session.inputChannels)
+        Out Channels:  \(session.outputChannels)
         Engine:        \(engineRunning ? "Running" : "Stopped")
         CPU Load:      \(String(format: "%.1f", cpuLoad * 100))%
         """
